@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✏️ Customize page title here -->
+  <title>Do you love me? 💖</title>
+
+  <!-- Favicon: pink heart -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>" />
+
+  <!-- Google Fonts: Quicksand for body, Pacifico for headline punch -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       🎨 DESIGN TOKENS — edit these to restyle
+       ============================================= */
+    :root {
+      --bg-start:       #FFE8EC;
+      --bg-end:         #FFF5F7;
+      --pink-primary:   #FF4E78;   /* main buttons */
+      --pink-hover:     #FF2259;   /* button hover */
+      --pink-soft:      #FF85A2;   /* accents */
+      --pink-deep:      #C2185B;   /* headline */
+      --white:          #FFFFFF;
+      --card-bg:        rgba(255,255,255,0.72);
+      --shadow:         0 8px 32px rgba(255, 78, 120, 0.18);
+      --radius-btn:     50px;
+      --radius-card:    28px;
+      --font:           'Quicksand', sans-serif;
+      --transition:     0.3s ease;
+    }
+
+    /* =============================================
+       RESET & BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      overflow-x: hidden;
+    }
+
+    /* =============================================
+       LAYOUT WRAPPER
+       ============================================= */
+    .scene {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 40px);
+      position: relative;
+    }
+
+    /* =============================================
+       CARD
+       ============================================= */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255, 133, 162, 0.25);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow);
+      padding: clamp(28px, 6vw, 52px) clamp(24px, 5vw, 48px);
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      position: relative;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .card.fade-out {
+      opacity: 0;
+      transform: scale(0.94);
+      pointer-events: none;
+    }
+
+    /* =============================================
+       SPEECH BUBBLE
+       ============================================= */
+    .bubble {
+      display: inline-block;
+      background: var(--pink-primary);
+      color: var(--white);
+      font-size: clamp(12px, 2.5vw, 14px);
+      font-weight: 700;
+      padding: 7px 18px;
+      border-radius: 20px;
+      position: relative;
+      margin-bottom: 18px;
+      animation: bobble 2.4s ease-in-out infinite;
+      letter-spacing: 0.3px;
+    }
+    .bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid var(--pink-primary);
+    }
+
+    @keyframes bobble {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    /* =============================================
+       HEADLINE
+       ============================================= */
+    .headline {
+      font-size: clamp(28px, 6.5vw, 44px);
+      font-weight: 700;
+      color: var(--pink-deep);
+      line-height: 1.2;
+      margin-bottom: clamp(20px, 4vw, 32px);
+      letter-spacing: -0.5px;
+    }
+
+    /* =============================================
+       BEARS — inline SVG duo
+       ============================================= */
+    .bears {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: clamp(12px, 4vw, 28px);
+      margin-bottom: clamp(28px, 5vw, 40px);
+    }
+
+    /* Individual bear wrapper */
+    .bear-wrap { position: relative; }
+
+    .bear-wrap svg {
+      width: clamp(80px, 18vw, 110px);
+      height: auto;
+      filter: drop-shadow(0 4px 10px rgba(255,78,120,0.15));
+      transition: transform 0.5s ease;
+    }
+
+    /* Brown bear sways left */
+    .bear-wrap:first-child svg { animation: swayL 3s ease-in-out infinite; }
+    /* Panda sways right */
+    .bear-wrap:last-child  svg { animation: swayR 3s ease-in-out infinite; }
+
+    @keyframes swayL {
+      0%,100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg);  }
+    }
+    @keyframes swayR {
+      0%,100% { transform: rotate(3deg);  }
+      50%      { transform: rotate(-3deg); }
+    }
+
+    /* =============================================
+       BUTTONS
+       ============================================= */
+    .btn-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: clamp(15px, 3.5vw, 18px);
+      font-weight: 700;
+      color: var(--white);
+      background: var(--pink-primary);
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: clamp(13px, 2.5vw, 16px) clamp(28px, 5vw, 40px);
+      min-height: 52px;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      box-shadow: 0 4px 18px rgba(255,78,120,0.35);
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover::after  { opacity: 1; }
+    .btn:active        { transform: scale(0.96); }
+
+    /* "Yes" gets a glow on hover */
+    #btn-yes:hover {
+      background: var(--pink-hover);
+      box-shadow: 0 6px 24px rgba(255,78,120,0.55);
+      transform: scale(1.05);
+    }
+
+    /* "No" button — becomes fixed so it can escape */
+    #btn-no {
+      background: var(--pink-primary);
+    }
+    #btn-no.floating {
+      position: fixed;
+      z-index: 9999;
+      /* JS writes top/left */
+      transition: top 0.22s cubic-bezier(.23,1.5,.7,1),
+                  left 0.22s cubic-bezier(.23,1.5,.7,1);
+    }
+    #btn-no.floating:hover { transform: none; } /* block scale while flying */
+
+    /* =============================================
+       SUCCESS SCREEN
+       ============================================= */
+    #success {
+      display: none;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.7s ease 0.2s, transform 0.7s cubic-bezier(.23,1.5,.7,1) 0.2s;
+    }
+    #success.visible {
+      display: block; /* set by JS first, then rAF flips opacity */
+    }
+    #success.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .success-headline {
+      font-size: clamp(30px, 7vw, 48px);
+      font-weight: 700;
+      color: var(--pink-deep);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    /* Hug animation: bears slide together */
+    .bears-hug {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: clamp(12px, 4vw, 28px);
+      margin-bottom: 8px;
+    }
+
+    .bears-hug .bear-wrap:first-child svg {
+      animation: slideRight 0.9s cubic-bezier(.23,1.5,.7,1) forwards;
+    }
+    .bears-hug .bear-wrap:last-child svg {
+      animation: slideLeft 0.9s cubic-bezier(.23,1.5,.7,1) forwards;
+    }
+
+    @keyframes slideRight {
+      0%   { transform: translateX(-40px) scale(1); }
+      70%  { transform: translateX(10px) scale(1.12); }
+      100% { transform: translateX(6px) scale(1.08); }
+    }
+    @keyframes slideLeft {
+      0%   { transform: translateX(40px) scale(1); }
+      70%  { transform: translateX(-10px) scale(1.12); }
+      100% { transform: translateX(-6px) scale(1.08); }
+    }
+
+    /* Heart pulse over bears */
+    .heart-pulse {
+      font-size: 32px;
+      animation: heartBeat 0.9s ease-in-out infinite;
+      display: block;
+      margin: 12px auto 0;
+    }
+    @keyframes heartBeat {
+      0%,100% { transform: scale(1); }
+      14%     { transform: scale(1.3); }
+      28%     { transform: scale(1); }
+      42%     { transform: scale(1.18); }
+      70%     { transform: scale(1); }
+    }
+
+    /* =============================================
+       FLOATING HEARTS (rising)
+       ============================================= */
+    .heart-float {
+      position: fixed;
+      pointer-events: none;
+      font-size: clamp(18px, 3vw, 26px);
+      animation: floatUp 2.6s ease-out forwards;
+      z-index: 9990;
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) scale(0.5); opacity: 1; }
+      60%  { opacity: 1; }
+      100% { transform: translateY(-65vh) scale(1.1); opacity: 0; }
+    }
+
+    /* =============================================
+       CONFETTI CANVAS
+       ============================================= */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9980;
+    }
+
+    /* =============================================
+       FOOTER CREDIT
+       ============================================= */
+    .credit {
+      position: fixed;
+      bottom: 14px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(194,24,91,0.45);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+      /* ✏️ Edit credit text in the HTML below */
+    }
+
+    /* =============================================
+       ACCESSIBILITY: reduce motion
+       ============================================= */
+    @media (prefers-reduced-motion: reduce) {
+      .bubble, .bear-wrap svg, .heart-float { animation: none; }
+      .card, #success { transition: opacity 0.3s ease; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- 🎨 Confetti canvas (drawn by JS) -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ================================================
+     QUESTION SCREEN
+     ================================================ -->
+<div class="scene" id="main-scene">
+  <div class="card" id="question-card">
+
+    <!-- ✏️ Speech bubble text -->
+    <div class="bubble">Reply me 💬</div>
+
+    <!-- ✏️ Main headline -->
+    <h1 class="headline">Do you love me?</h1>
+
+    <!-- ✏️ Bear illustrations (inline SVG — edit fill colors to change fur) -->
+    <div class="bears">
+
+      <!-- Brown Bear -->
+      <div class="bear-wrap" id="bear-brown">
+        <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Brown bear">
+          <!-- ears -->
+          <circle cx="32" cy="32" r="16" fill="#A0522D"/>
+          <circle cx="88" cy="32" r="16" fill="#A0522D"/>
+          <circle cx="32" cy="32" r="10" fill="#CD8B52"/>
+          <circle cx="88" cy="32" r="10" fill="#CD8B52"/>
+          <!-- head -->
+          <ellipse cx="60" cy="60" rx="36" ry="34" fill="#A0522D"/>
+          <!-- snout -->
+          <ellipse cx="60" cy="72" rx="18" ry="13" fill="#CD8B52"/>
+          <!-- eyes -->
+          <circle cx="47" cy="54" r="6" fill="#2C1A0E"/>
+          <circle cx="73" cy="54" r="6" fill="#2C1A0E"/>
+          <circle cx="49" cy="52" r="2" fill="white"/>
+          <circle cx="75" cy="52" r="2" fill="white"/>
+          <!-- nose -->
+          <ellipse cx="60" cy="68" rx="5" ry="3.5" fill="#2C1A0E"/>
+          <!-- smile -->
+          <path d="M52 75 Q60 82 68 75" stroke="#2C1A0E" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- blush -->
+          <ellipse cx="40" cy="67" rx="8" ry="5" fill="#FFB3C6" opacity="0.55"/>
+          <ellipse cx="80" cy="67" rx="8" ry="5" fill="#FFB3C6" opacity="0.55"/>
+          <!-- body -->
+          <ellipse cx="60" cy="115" rx="32" ry="28" fill="#A0522D"/>
+          <!-- belly -->
+          <ellipse cx="60" cy="118" rx="18" ry="16" fill="#CD8B52"/>
+          <!-- arms -->
+          <ellipse cx="24" cy="110" rx="12" ry="22" fill="#A0522D" transform="rotate(-15 24 110)"/>
+          <ellipse cx="96" cy="110" rx="12" ry="22" fill="#A0522D" transform="rotate(15 96 110)"/>
+          <!-- legs -->
+          <ellipse cx="46" cy="136" rx="11" ry="8" fill="#8B4513"/>
+          <ellipse cx="74" cy="136" rx="11" ry="8" fill="#8B4513"/>
+          <!-- heart on tummy -->
+          <text x="53" y="122" font-size="14" fill="#FF4E78">♥</text>
+        </svg>
+      </div>
+
+      <!-- Panda Bear -->
+      <div class="bear-wrap" id="bear-panda">
+        <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Panda bear">
+          <!-- ears -->
+          <circle cx="32" cy="30" r="16" fill="#2C2C2C"/>
+          <circle cx="88" cy="30" r="16" fill="#2C2C2C"/>
+          <!-- head -->
+          <ellipse cx="60" cy="60" rx="36" ry="34" fill="#F8F8F8"/>
+          <!-- eye patches -->
+          <ellipse cx="44" cy="52" rx="13" ry="11" fill="#2C2C2C"/>
+          <ellipse cx="76" cy="52" rx="13" ry="11" fill="#2C2C2C"/>
+          <!-- eyes -->
+          <circle cx="44" cy="53" r="6" fill="white"/>
+          <circle cx="76" cy="53" r="6" fill="white"/>
+          <circle cx="44" cy="54" r="3.5" fill="#1A1A1A"/>
+          <circle cx="76" cy="54" r="3.5" fill="#1A1A1A"/>
+          <circle cx="45" cy="52" r="1.2" fill="white"/>
+          <circle cx="77" cy="52" r="1.2" fill="white"/>
+          <!-- snout -->
+          <ellipse cx="60" cy="72" rx="17" ry="12" fill="#EBEBEB"/>
+          <!-- nose -->
+          <ellipse cx="60" cy="67" rx="5" ry="3.5" fill="#1A1A1A"/>
+          <!-- smile -->
+          <path d="M52 75 Q60 83 68 75" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- blush -->
+          <ellipse cx="38" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity="0.6"/>
+          <ellipse cx="82" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity="0.6"/>
+          <!-- body -->
+          <ellipse cx="60" cy="115" rx="32" ry="28" fill="#F8F8F8"/>
+          <!-- arms -->
+          <ellipse cx="24" cy="110" rx="12" ry="22" fill="#2C2C2C" transform="rotate(-15 24 110)"/>
+          <ellipse cx="96" cy="110" rx="12" ry="22" fill="#2C2C2C" transform="rotate(15 96 110)"/>
+          <!-- legs -->
+          <ellipse cx="46" cy="136" rx="11" ry="8" fill="#2C2C2C"/>
+          <ellipse cx="74" cy="136" rx="11" ry="8" fill="#2C2C2C"/>
+          <!-- belly spot -->
+          <ellipse cx="60" cy="115" rx="16" ry="14" fill="#EBEBEB"/>
+          <!-- heart on tummy -->
+          <text x="53" y="120" font-size="14" fill="#FF4E78">♥</text>
+        </svg>
+      </div>
+
+    </div><!-- /.bears -->
+
+    <!-- CTA Buttons -->
+    <div class="btn-row">
+      <!-- ✏️ Edit button labels here -->
+      <button class="btn" id="btn-yes">Yes 💖</button>
+      <button class="btn" id="btn-no">No 😒</button>
+    </div>
+
+  </div><!-- /#question-card -->
+</div><!-- /#main-scene -->
+
+<!-- ================================================
+     SUCCESS SCREEN
+     ================================================ -->
+<div class="scene" id="success-scene" style="display:none; position:fixed; inset:0; z-index:100; background:linear-gradient(135deg,#FFE8EC,#FFF5F7);">
+  <div class="card" id="success" style="max-width:480px;">
+
+    <!-- ✏️ Success headline -->
+    <h1 class="success-headline">I knew it 😍!</h1>
+
+    <!-- Bears hugging -->
+    <div class="bears-hug">
+      <div class="bear-wrap">
+        <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="32" cy="32" r="16" fill="#A0522D"/>
+          <circle cx="88" cy="32" r="16" fill="#A0522D"/>
+          <circle cx="32" cy="32" r="10" fill="#CD8B52"/>
+          <circle cx="88" cy="32" r="10" fill="#CD8B52"/>
+          <ellipse cx="60" cy="60" rx="36" ry="34" fill="#A0522D"/>
+          <ellipse cx="60" cy="72" rx="18" ry="13" fill="#CD8B52"/>
+          <circle cx="47" cy="54" r="6" fill="#2C1A0E"/>
+          <circle cx="73" cy="54" r="6" fill="#2C1A0E"/>
+          <circle cx="49" cy="52" r="2" fill="white"/>
+          <circle cx="75" cy="52" r="2" fill="white"/>
+          <ellipse cx="60" cy="68" rx="5" ry="3.5" fill="#2C1A0E"/>
+          <!-- happy closed eyes -->
+          <path d="M42 54 Q47 50 52 54" stroke="#2C1A0E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M68 54 Q73 50 78 54" stroke="#2C1A0E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- big smile -->
+          <path d="M49 75 Q60 86 71 75" stroke="#2C1A0E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="40" cy="67" rx="8" ry="5" fill="#FFB3C6" opacity="0.65"/>
+          <ellipse cx="80" cy="67" rx="8" ry="5" fill="#FFB3C6" opacity="0.65"/>
+          <ellipse cx="60" cy="115" rx="32" ry="28" fill="#A0522D"/>
+          <ellipse cx="60" cy="118" rx="18" ry="16" fill="#CD8B52"/>
+          <!-- arm reaching right (hug!) -->
+          <ellipse cx="96" cy="105" rx="12" ry="25" fill="#A0522D" transform="rotate(30 96 105)"/>
+          <ellipse cx="24" cy="110" rx="12" ry="22" fill="#A0522D" transform="rotate(-15 24 110)"/>
+          <ellipse cx="46" cy="136" rx="11" ry="8" fill="#8B4513"/>
+          <ellipse cx="74" cy="136" rx="11" ry="8" fill="#8B4513"/>
+          <text x="53" y="122" font-size="14" fill="#FF4E78">♥</text>
+        </svg>
+      </div>
+
+      <div class="bear-wrap">
+        <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="32" cy="30" r="16" fill="#2C2C2C"/>
+          <circle cx="88" cy="30" r="16" fill="#2C2C2C"/>
+          <ellipse cx="60" cy="60" rx="36" ry="34" fill="#F8F8F8"/>
+          <ellipse cx="44" cy="52" rx="13" ry="11" fill="#2C2C2C"/>
+          <ellipse cx="76" cy="52" rx="13" ry="11" fill="#2C2C2C"/>
+          <ellipse cx="60" cy="72" rx="17" ry="12" fill="#EBEBEB"/>
+          <ellipse cx="60" cy="67" rx="5" ry="3.5" fill="#1A1A1A"/>
+          <!-- happy closed eyes -->
+          <path d="M38 52 Q44 47 50 52" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M70 52 Q76 47 82 52" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M52 75 Q60 83 68 75" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <ellipse cx="38" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity="0.65"/>
+          <ellipse cx="82" cy="68" rx="8" ry="5" fill="#FFB3C6" opacity="0.65"/>
+          <ellipse cx="60" cy="115" rx="32" ry="28" fill="#F8F8F8"/>
+          <!-- arm reaching left (hug!) -->
+          <ellipse cx="24" cy="105" rx="12" ry="25" fill="#2C2C2C" transform="rotate(-30 24 105)"/>
+          <ellipse cx="96" cy="110" rx="12" ry="22" fill="#2C2C2C" transform="rotate(15 96 110)"/>
+          <ellipse cx="46" cy="136" rx="11" ry="8" fill="#2C2C2C"/>
+          <ellipse cx="74" cy="136" rx="11" ry="8" fill="#2C2C2C"/>
+          <ellipse cx="60" cy="115" rx="16" ry="14" fill="#EBEBEB"/>
+          <text x="53" y="120" font-size="14" fill="#FF4E78">♥</text>
+        </svg>
+      </div>
+    </div><!-- /.bears-hug -->
+
+    <span class="heart-pulse" role="img" aria-label="beating heart">💖</span>
+
+  </div><!-- /#success -->
+</div><!-- /#success-scene -->
+
+<!-- ✏️ Edit or remove the credit line -->
+<footer class="credit">Made with 💖</footer>
+
+
+<script>
+/* ================================================
+   🎮 INTERACTION LOGIC
+   ================================================ */
+
+(function () {
+  "use strict";
+
+  /* ---------- elements ---------- */
+  const btnYes    = document.getElementById('btn-yes');
+  const btnNo     = document.getElementById('btn-no');
+  const card      = document.getElementById('question-card');
+  const successScene = document.getElementById('success-scene');
+  const successEl = document.getElementById('success');
+  const canvas    = document.getElementById('confetti-canvas');
+
+  /* ---------- Web Audio "pop" sound ---------- */
+  function playPop() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    } catch (e) { /* audio not available — silent fail */ }
+  }
+
+  /* ================================================
+     "NO" BUTTON — runs away
+     ================================================ */
+  let noFixed = false;   // has it been made position:fixed yet?
+  let noRect  = null;    // last known bounding rect
+
+  /**
+   * Move the "No" button to a random spot inside the viewport,
+   * clamped so it never clips off-screen.
+   */
+  function escapeNo() {
+    if (!noFixed) {
+      /* First hover: switch to fixed positioning anchored at current spot */
+      noRect = btnNo.getBoundingClientRect();
+      btnNo.style.width  = noRect.width  + 'px';
+      btnNo.style.height = noRect.height + 'px';
+      btnNo.style.top    = noRect.top    + 'px';
+      btnNo.style.left   = noRect.left   + 'px';
+      btnNo.classList.add('floating');
+      noFixed = true;
+      /* Let CSS transition take over for all future moves */
+    }
+
+    const w  = window.innerWidth;
+    const h  = window.innerHeight;
+    const bw = btnNo.offsetWidth  || 120;
+    const bh = btnNo.offsetHeight || 52;
+
+    /* ✏️ Adjust padding (px) to keep button fully in viewport */
+    const pad = 16;
+    const maxX = w - bw - pad;
+    const maxY = h - bh - pad;
+
+    const newX = Math.floor(Math.random() * (maxX - pad)) + pad;
+    const newY = Math.floor(Math.random() * (maxY - pad)) + pad;
+
+    btnNo.style.left = newX + 'px';
+    btnNo.style.top  = newY + 'px';
+  }
+
+  /* Desktop: hover */
+  btnNo.addEventListener('mouseover', escapeNo);
+
+  /* Mobile: touchstart & touchmove */
+  btnNo.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    escapeNo();
+  }, { passive: false });
+
+  /* Extra paranoia: if somehow they tap it anyway, move it again */
+  btnNo.addEventListener('click', function (e) {
+    e.preventDefault();
+    escapeNo();
+  });
+
+  /* ================================================
+     "YES" BUTTON — the happy path
+     ================================================ */
+  btnYes.addEventListener('click', function () {
+    playPop();
+    spawnHearts();
+    launchConfetti();
+
+    /* Fade out question card */
+    card.classList.add('fade-out');
+
+    setTimeout(function () {
+      document.getElementById('main-scene').style.display = 'none';
+      successScene.style.display = 'flex';
+      successEl.classList.add('visible');
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          successEl.classList.add('show');
+        });
+      });
+
+      /* Keep raining hearts for a bit */
+      let count = 0;
+      const interval = setInterval(function () {
+        spawnHearts(3);
+        count++;
+        if (count > 8) clearInterval(interval);
+      }, 400);
+
+    }, 500);
+  });
+
+  /* ================================================
+     FLOATING HEARTS
+     ================================================ */
+  const HEART_EMOJIS = ['💖', '💗', '💓', '💕', '🩷', '❤️', '💝'];
+
+  /**
+   * Spawn `n` floating hearts at random x positions along the bottom.
+   * @param {number} n - number of hearts (default 8)
+   */
+  function spawnHearts(n) {
+    n = n || 8;
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart-float';
+      h.textContent = HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
+      h.style.left  = (Math.random() * 90 + 5) + 'vw';
+      h.style.bottom = (Math.random() * 10) + 'px';
+      h.style.animationDelay    = (Math.random() * 0.6) + 's';
+      h.style.animationDuration = (2.2 + Math.random() * 1.4) + 's';
+      document.body.appendChild(h);
+      h.addEventListener('animationend', function () { h.remove(); });
+    }
+  }
+
+  /* ================================================
+     CONFETTI — pure canvas, no library
+     ================================================ */
+  const ctx = canvas.getContext('2d');
+  let confettiParticles = [];
+  let animFrame = null;
+
+  const CONFETTI_COLORS = [
+    '#FF4E78','#FF85A2','#FFB3C6','#C2185B',
+    '#FFD700','#FF6B6B','#A8EDEA','#FED9B7'
+  ];
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function launchConfetti() {
+    confettiParticles = [];
+    const cx = window.innerWidth  / 2;
+    const cy = window.innerHeight / 2;
+
+    /* ✏️ Change 120 to more/fewer confetti pieces */
+    for (let i = 0; i < 120; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 3 + Math.random() * 9;
+      confettiParticles.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 4,   /* slight upward bias */
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        size: 5 + Math.random() * 7,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.25,
+        gravity: 0.22,
+        alpha: 1,
+        shape: Math.random() > 0.4 ? 'rect' : 'circle'
+      });
+    }
+
+    if (animFrame) cancelAnimationFrame(animFrame);
+    renderConfetti();
+  }
+
+  function renderConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    confettiParticles.forEach(function (p) {
+      if (p.alpha <= 0) return;
+      alive = true;
+
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.99;
+      p.rotation += p.rotSpeed;
+      if (p.y > canvas.height * 0.6) p.alpha -= 0.018;
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+
+    if (alive) {
+      animFrame = requestAnimationFrame(renderConfetti);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
